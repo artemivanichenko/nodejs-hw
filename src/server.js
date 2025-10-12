@@ -1,12 +1,21 @@
 import express from 'express';
 import 'dotenv/config';
-import path from 'node:path';
 import cors from 'cors';
+import pino from 'pino-http';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
+app.use(
+  pino({
+    transport: {
+      target: 'pino-pretty',
+    },
+  }),
+);
+
 app.use(cors());
+app.use(express.json());
 
 app.get('/notes', (req, res) => {
   res.json({
