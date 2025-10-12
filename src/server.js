@@ -8,15 +8,6 @@ const PORT = Number(process.env.PORT) || 3000;
 
 app.use(cors());
 
-// абсолютний шлях до робочої директорії
-// const pathToWorkDir = path.join(process.cwd());
-
-// додаємо нові частини до шляху
-// const pathToFile = path.join(pathToWorkDir, 'some_folder', 'some_file.txt');
-
-// macOS → /коренева_папка/some_folder/some_file.txt
-// Windows → C:\\\\коренева_папка\\\\some_folder\\\\some_file.txt
-
 app.get('/notes', (req, res) => {
   res.json({
     message: 'Retrieved all notes',
