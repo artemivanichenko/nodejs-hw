@@ -6,6 +6,8 @@ import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import noteRoutes from './routes/notesRoutes.js';
+import { errors } from 'celebrate';
+// import { errors as celebrateErrorHandler } from 'celebrate';
 
 const app = express();
 
@@ -15,6 +17,7 @@ app.use(express.json());
 app.use('/', noteRoutes);
 
 app.use(notFoundHandler);
+app.use(errors());
 app.use(errorHandler);
 
 const PORT = Number(process.env.PORT) || 3030;
