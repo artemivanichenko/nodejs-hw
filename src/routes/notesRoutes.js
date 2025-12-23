@@ -9,6 +9,8 @@ import {
 import {
   getAllNotesSchema,
   noteIdSchema,
+  createNoteSchema,
+  updateNoteSchema,
 } from '../validations/notesValidation.js';
 import { celebrate } from 'celebrate';
 
@@ -16,8 +18,8 @@ const noteRoutes = Router();
 
 noteRoutes.get('/notes', celebrate(getAllNotesSchema), getAllNotes);
 noteRoutes.get('/notes/:noteId', celebrate(noteIdSchema), getNoteById);
-noteRoutes.post('/notes', createNote);
-noteRoutes.patch('/notes/:noteId', updateNote);
+noteRoutes.post('/notes', celebrate(createNoteSchema), createNote);
+noteRoutes.patch('/notes/:noteId', celebrate(updateNoteSchema), updateNote);
 noteRoutes.delete('/notes/:noteId', deleteNote);
 
 export default noteRoutes;
