@@ -20,6 +20,6 @@ noteRoutes.get('/notes', celebrate(getAllNotesSchema), getAllNotes);
 noteRoutes.get('/notes/:noteId', celebrate(noteIdSchema), getNoteById);
 noteRoutes.post('/notes', celebrate(createNoteSchema), createNote);
 noteRoutes.patch('/notes/:noteId', celebrate(updateNoteSchema), updateNote);
-noteRoutes.delete('/notes/:noteId', deleteNote);
+noteRoutes.delete('/notes/:noteId', celebrate(noteIdSchema), deleteNote);
 
 export default noteRoutes;
