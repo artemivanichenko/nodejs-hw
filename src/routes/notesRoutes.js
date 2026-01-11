@@ -13,9 +13,11 @@ import {
   updateNoteSchema,
 } from '../validations/notesValidation.js';
 import { celebrate } from 'celebrate';
+import { authenticate } from '../middleware/authenticate.js';
 
 const noteRoutes = Router();
 
+noteRoutes.use('/notes', authenticate);
 noteRoutes.get('/notes', celebrate(getAllNotesSchema), getAllNotes);
 noteRoutes.get('/notes/:noteId', celebrate(noteIdSchema), getNoteById);
 noteRoutes.post('/notes', celebrate(createNoteSchema), createNote);
