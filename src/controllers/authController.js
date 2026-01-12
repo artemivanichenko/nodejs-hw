@@ -12,35 +12,32 @@ export const register = async (req, res, next) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     //409 better
-    next(createHttpError(400, 'User with such email already exists'));
-    return;
+    return next(createHttpError(400, 'User with such email already exists'));
   }
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = await User.create({ email, password: hashedPassword });
   const newSession = await createSession(newUser._id);
   setSessionCookies(newSession, res);
-  res.status(201).json(newUser);
+  return res.status(201).json(newUser);
 };
 
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    next(createHttpError(401, 'Invalid email or password'));
-    return;
+    return next(createHttpError(401, 'Invalid email or password'));
   }
   const isCorrectPassword = await bcrypt.compare(password, user.password);
   if (!isCorrectPassword) {
-    next(createHttpError(401, 'Invalid email or password'));
-    return;
+    return next(createHttpError(401, 'Invalid email or password'));
   }
   await Session.deleteOne({ userId: user._id });
 
   const newSession = await createSession(user._id);
   setSessionCookies(newSession, res);
 
-  res.status(200).json(user);
+  return res.status(200).json(user);
 };
 
 export const refreshSession = async (req, res, next) => {
@@ -51,19 +48,19 @@ export const refreshSession = async (req, res, next) => {
   });
 
   if (!session) {
-    next(createHttpError(401, 'Session not found'));
+    return next(createHttpError(401, 'Session not found'));
   }
   const userId = session.userID;
 
   const isRefreshTokenExpired = new Date() > session.refreshTokenValidUntil;
   if (isRefreshTokenExpired) {
-    next(createHttpError(401, 'Refresh token expired'));
+    return next(createHttpError(401, 'Refresh token expired'));
   }
 
   await Session.deleteOne({ _id: sessionId, refreshToken });
   const newSession = await createSession(userId);
   setSessionCookies(newSession, res);
-  res.status(200).json({ message: 'Session refreshed' });
+  return res.status(200).json({ message: 'Session refreshed' });
 };
 
 export const logout = async (req, res) => {
@@ -74,5 +71,5 @@ export const logout = async (req, res) => {
   res.clearCookie('accessToken');
   res.clearCookie('refreshToken');
   res.clearCookie('sessionId');
-  res.status(204).end();
+  return res.status(204).end();
 };

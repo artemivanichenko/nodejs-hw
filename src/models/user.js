@@ -9,18 +9,13 @@ const userSchema = new Schema(
     email: {
       type: String,
       trim: true,
-      require: true,
+      required: true,
       unique: true,
     },
     password: {
       type: String,
       trim: true,
-      require: true,
-    },
-    userID: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      require: true,
+      required: true,
     },
   },
   {
