@@ -25,7 +25,7 @@ app.use(notFoundHandler);
 app.use(errors());
 app.use(errorHandler);
 
-const PORT = Number(process.env.PORT) || 3030;
+const PORT = Number(process.env.PORT) || 3000;
 
 await connectMongoDB();
 
