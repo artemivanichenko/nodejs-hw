@@ -19,7 +19,7 @@ const userSchema = new Schema(
     },
     avatar: {
       type: String,
-      default: 'https://www.resource.com/avatar.jpg',
+      default: 'https://ac.goit.global/fullstack/react/default-avatar.jpg',
     },
   },
   {
