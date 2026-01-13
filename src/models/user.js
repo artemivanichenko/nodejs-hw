@@ -17,13 +17,10 @@ const userSchema = new Schema(
       trim: true,
       required: true,
     },
-<<<<<<< Updated upstream
-=======
     avatar: {
       type: String,
       default: 'https://www.resource.com/avatar.jpg',
     },
->>>>>>> Stashed changes
   },
   {
     timestamps: true,
