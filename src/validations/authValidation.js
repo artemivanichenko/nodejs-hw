@@ -17,3 +17,16 @@ export const loginUserSchema = {
     password: Joi.string().required(),
   }),
 };
+
+export const requestResetEmailSchema = {
+  [Segments.BODY]: Joi.object({
+    email: Joi.string().email().required(),
+  }),
+};
+
+export const requestResetPassSchema = {
+  [Segments.BODY]: Joi.object({
+    resetToken: Joi.string().required(),
+    password: Joi.string().min(8).max(30).required(),
+  }),
+};

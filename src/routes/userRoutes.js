@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { updateAvatar } from '../controllers/userController.js';
-import { MediaParser } from '../middleware/multer.js';
+import { mediaParser } from '../middleware/multer.js';
 import { authenticate } from '../middleware/authenticate.js';
 
 const userRoutes = Router();
@@ -8,7 +8,7 @@ const userRoutes = Router();
 userRoutes.patch(
   '/me/avatar',
   authenticate,
-  MediaParser.single('avatar'),
+  mediaParser.single('avatar'),
   updateAvatar,
 );
 

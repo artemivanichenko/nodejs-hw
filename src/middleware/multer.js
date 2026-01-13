@@ -1,6 +1,6 @@
 import multer from 'multer';
 
-export const MediaParser = multer({
+export const mediaParser = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 2 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
