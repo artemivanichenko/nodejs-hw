@@ -27,7 +27,7 @@ router.post(
   requestResetEmail,
 );
 router.post(
-  '/request-reset-pass',
+  '/reset-password',
   celebrate(requestResetPassSchema),
   requestResetPass,
 );

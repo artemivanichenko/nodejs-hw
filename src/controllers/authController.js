@@ -4,7 +4,10 @@ import { User } from '../models/user.js';
 import { createSession, setSessionCookies } from '../services/auth.js';
 import { Session } from '../models/session.js';
 import jwt from 'jsonwebtoken';
-import { sendEmail } from '../utils/sendMail.js';
+import { sendMail } from '../utils/sendMail.js';
+import handlebars from 'handlebars';
+import path from 'node:path';
+import fs from 'node:fs/promises';
 
 export const register = async (req, res, next) => {
   const { email, password } = req.body;
@@ -77,32 +80,38 @@ export const logout = async (req, res) => {
 };
 
 export const requestResetEmail = async (req, res, next) => {
-  const { email } = req.body;
+  const email = req.body?.email;
+  if (!email) return next(createHttpError(400, 'Email is required'));
+
   const user = await User.findOne({ email });
-  if (!user)
-    return res.status(200).json({
-      message:
-        ' If an account with such email exists, a reset link has been sent',
-    });
-  const resetToken = jwt.sign({ id: user._id, email }, process.env.JWT_SECRET, {
-    expiresIn: '10m',
-  });
+  const NEUTRAL = { message: 'Password reset email sent successfully' };
+  if (!user) return res.status(200).json(NEUTRAL);
+
+  const token = jwt.sign(
+    { sub: String(user._id), email },
+    process.env.JWT_SECRET,
+    { expiresIn: '15m' },
+  );
+
   try {
-    await sendEmail({
-      from: process.env.SMTP_FROM,
-      to: email,
-      subject: 'Password Reset Email',
-      html: `<p>Click <a href='${process.env.FRONTEND_DOMAIN}?token=${resetToken}'>here</a></p>`,
+    const templatePath = path.resolve(
+      'src/templates/reset-password-email.html',
+    );
+    const source = await fs.readFile(templatePath, 'utf-8');
+    const template = handlebars.compile(source);
+    const html = template({
+      name: user.username || user.email,
+      link: `${process.env.FRONTEND_DOMAIN}/reset-password?token=${token}`,
     });
-  } catch (error) {
-    console.log(error);
-    return next(createHttpError(500, 'Failed to send email'));
+
+    await sendMail({ to: email, subject: 'Reset your password', html });
+  } catch {
+    return next(
+      createHttpError(500, 'Failed to send the email, please try again later.'),
+    );
   }
 
-  return res.status(200).json({
-    message:
-      ' If an account with such email exists, a reset link has been sent',
-  });
+  return res.status(200).json(NEUTRAL);
 };
 
 export const requestResetPass = async (req, res, next) => {
